@@ -7,6 +7,11 @@
       "outDir": "./build",
       "esModuleInterop": true,
       "strict": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "paths": {
+        "@db/*":["src/db/*"],
+        "@usecases/*":["src/usecase/*"],
+        "@errors/*":["src/core/errors/*"]
+      }
     }
   }

@@ -1,11 +1,14 @@
-import { Schema, Types } from 'mongoose'
+import { Schema } from 'mongoose'
 import baseFields from './base'
 
-const inventorySchema = new Schema({
-    id: Types.ObjectId,
+export interface Inventory {
+    book: Schema.Types.ObjectId
+    quantity: number
+}
+const inventorySchema = new Schema<Inventory>({
     book: {
-        type: Types.ObjectId,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: 'Book',
     },
     quantity: {
         type: Number,

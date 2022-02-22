@@ -1,9 +1,11 @@
-import { Schema, Types } from 'mongoose'
+import { Schema, Document } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import baseFields from './base'
 
-const publisherSchema = new Schema({
-    id: Types.ObjectId,
+export interface Publisher extends Document {
+    name: string
+}
+const publisherSchema = new Schema<Publisher>({
     name: {
         type: String,
         required: true,

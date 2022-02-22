@@ -1,10 +1,12 @@
-import { Schema, Types } from 'mongoose'
+import { Document, Schema } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
 import baseFields from './base'
 
-const authorSchema = new Schema({
-    id: Types.ObjectId,
+export interface Author extends Document {
+    name: string
+}
+const authorSchema = new Schema<Author>({
     name: {
         type: String,
         required: true,

@@ -1,26 +1,27 @@
-import { Schema, Types } from 'mongoose'
+import { Schema, Document } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import baseFields from './base'
 
-const bookSchema = new Schema({
-    id: Types.ObjectId,
+export interface Book extends Document {
+    title: string
+    authors: { id: Schema.Types.ObjectId }[]
+    publisher: { id: Schema.Types.ObjectId }
+    published_year: number
+    outOfStock: boolean
+    format: 'paper' | 'digital'
+    summary: string
+}
+
+const bookSchema = new Schema<Book>({
     title: {
         type: String,
         required: true,
     },
-    authors: [
-        {
-            id: { type: Types.ObjectId, required: true },
-            name: { type: String, required: true },
-        },
-    ],
-    publisher: {
-        id: { type: Types.ObjectId, required: true },
-        name: { type: String, required: true },
-    },
+    authors: [{ id: { type: Schema.Types.ObjectId, ref: 'Author' } }],
+    publisher: { id: { type: Schema.Types.ObjectId, ref: 'Publisher' } },
     published_year: { type: Number, required: true },
     summary: { type: String, required: false },
-    outOfStack: {
+    outOfStock: {
         type: Boolean,
         default: false,
     },

@@ -23,6 +23,7 @@
       ],
     "rules": {
         "prettier/prettier": ["error"],
+        "no-use-before-define": ["error", { "variables": false }],
         "quotes": ["error", "single"],
         "semi": ["error", "never"],
         "indent": ["error", 4],
