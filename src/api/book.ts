@@ -16,19 +16,19 @@ bookRouter.post('/', async (req: Request, res: Response, next: any) => {
 })
 bookRouter.put('/:id', async (req: Request, res: Response, next: any) => {
     if (!req.params.id) throw new MissingParameterError('path variable id')
-    const { publisher_id, authors_id } = req.body
+    const { publisher_id, author_ids } = req.body
     req.body.id = req.params.id
     req.body.publisherId = publisher_id
-    req.body.authorsId = authors_id
+    req.body.authorIds = author_ids
     updateBook(req.body)
-        .then((book) => handleResponse(res, 201, book))
+        .then((book) => handleResponse(res, 200, book))
         .catch(next)
 })
 
 bookRouter.delete('/:id', async (req: Request, res: Response, next: any) => {
     if (!req.params.id) throw new MissingParameterError('path variable id')
     createBook(req.body)
-        .then((book) => handleResponse(res, 201, book))
+        .then((book) => handleResponse(res, 200, book))
         .catch(next)
 })
 

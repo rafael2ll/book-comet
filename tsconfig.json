@@ -14,5 +14,7 @@
         "@usecases/*":["src/usecase/*"],
         "@errors/*":["src/core/errors/*"]
       }
-    }
+    },
+    "include": ["tests/*", "src/**/*.ts"],
+    "exclude": ["node_modules"]
   }

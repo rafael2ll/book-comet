@@ -1,5 +1,10 @@
 import { SchemaDefinition } from 'mongoose'
 
+export interface BaseFields {
+    createdAt: Date
+    updatedAt: Date
+    enabled: boolean
+}
 const baseFields: SchemaDefinition = {
     createdAt: {
         default: Date.now,

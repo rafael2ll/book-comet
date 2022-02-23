@@ -1,8 +1,8 @@
 import { Schema, Document } from 'mongoose'
 import { mongoosePagination } from 'mongoose-paginate-ts'
-import baseFields from './base'
+import baseFields, { BaseFields } from './base'
 
-export interface Book extends Document {
+export interface Book extends Document, BaseFields {
     title: string
     authors: { id: Schema.Types.ObjectId; name: string }[]
     publisher: { id: Schema.Types.ObjectId; name: string }
