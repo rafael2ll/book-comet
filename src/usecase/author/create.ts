@@ -9,7 +9,7 @@ export const createAuthor = async (
     authorOpts: CreateAuthorModel
 ): Promise<Author> => {
     if (await AuthorModel.exists({ ...authorOpts }))
-        throw new ConflictError('Publisher')
+        throw new ConflictError('Author')
 
     const author: Author = new AuthorModel(authorOpts)
     const error = author.validateSync()

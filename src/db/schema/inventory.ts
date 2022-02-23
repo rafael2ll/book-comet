@@ -1,20 +1,23 @@
-import { Schema } from 'mongoose'
+import { Schema, Document } from 'mongoose'
+import { mongoosePagination } from 'mongoose-paginate-ts'
 import baseFields from './base'
 
-export interface Inventory {
+export interface Inventory extends Document {
     book: Schema.Types.ObjectId
-    quantity: number
+    amount: number
 }
 const inventorySchema = new Schema<Inventory>({
     book: {
         type: Schema.Types.ObjectId,
         ref: 'Book',
     },
-    quantity: {
+    amount: {
         type: Number,
         default: 0,
+        min: 0,
     },
     ...baseFields,
 })
 
+inventorySchema.plugin(mongoosePagination)
 export default inventorySchema

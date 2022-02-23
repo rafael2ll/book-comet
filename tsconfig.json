@@ -10,6 +10,7 @@
       "sourceMap": true,
       "paths": {
         "@db/*":["src/db/*"],
+        "@core/*":["src/core/*"],
         "@usecases/*":["src/usecase/*"],
         "@errors/*":["src/core/errors/*"]
       }

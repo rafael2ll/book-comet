@@ -1,22 +1,18 @@
-import { BadRequestError, ConflictError } from '@errors/api-errors'
+import { BadRequestError } from '@errors/api-errors'
 import { BookModel } from '@db/models'
-import { Author } from '@db/schema/author'
-import { Schema } from 'mongoose'
+import { Types } from 'mongoose'
 import { Book } from '@db/schema/book'
-
-export interface CreateBookModel {
-    name: string
-    authorIds: string[]
-    publisherId: string
-    publishedYear: number
-    summary: string
-    quantity: number
-    format: 'paper' | 'digital'
-}
+import { createInventoryInternal } from '@usecases/inventory/internal-create'
+import findAuthorById from '@usecases/author/find-by-id'
+import findPublisherById from '@usecases/publisher/find-by-id'
+import { Author } from '@db/schema/author'
+import { Publisher } from '@db/schema/publisher'
+import validateInsertion from './helpers/validators'
+import { CreateBookModel } from './models'
 
 const createBook = async (createBookModel: CreateBookModel): Promise<Book> => {
-    await validateExistence(createBookModel)
-    const book = createBookObject(createBookModel)
+    await validateInsertion(createBookModel)
+    const book = await createBookObject(createBookModel)
     const error = book.validateSync()
     if (error) {
         throw new BadRequestError(
@@ -25,26 +21,34 @@ const createBook = async (createBookModel: CreateBookModel): Promise<Book> => {
                 .join(', ')
         )
     }
-    return book.save()
-}
 
-const createBookObject = (model: CreateBookModel): Book => {
+    const createdBook = await book.save()
+    await createInventoryInternal({
+        bookId: createdBook.id,
+        quantity: createBookModel.amount,
+    })
+    return createdBook
+}
+const createBookObject = async (model: CreateBookModel): Promise<Book> => {
+    const authorsPromise = model.authorIds.map((aId) => findAuthorById(aId))
+    const publisherPromise = findPublisherById(model.publisherId)
+    const dataResponse = await Promise.all([
+        ...authorsPromise,
+        publisherPromise,
+    ])
+    const publisher: Publisher = dataResponse.pop()!
     return new BookModel({
-        name: model.name,
+        title: model.title,
         summary: model.summary,
-        outOfStock: model.quantity === 0,
+        outOfStock: model.amount === 0 ?? true,
         published_year: model.publishedYear,
-        publisher: new Schema.Types.ObjectId(model.publisherId),
-        authors: model.authorIds.map((aId) => new Schema.Types.ObjectId(aId)),
+        publisher: { id: publisher.id, name: publisher.name },
+        authors: dataResponse.map((author: Author) => ({
+            id: author.id,
+            name: author.name,
+        })),
         format: model.format,
     })
-}
-const validateExistence = async (model: CreateBookModel): Promise<void> => {
-    const exists = await BookModel.exists({
-        name: model.name,
-        authors: { $all: model.authorIds },
-    })
-    if (exists) throw new ConflictError('Book')
 }
 
 export default createBook

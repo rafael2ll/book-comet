@@ -1,12 +1,28 @@
 import mongoose from 'mongoose'
-import authorSchema from './schema/author'
-import bookSchema from './schema/book'
-import inventorySchema from './schema/inventory'
-import publisherSchema from './schema/publisher'
+import { Pagination } from 'mongoose-paginate-ts'
+import authorSchema, { Author } from './schema/author'
+import bookSchema, { Book } from './schema/book'
+import inventorySchema, { Inventory } from './schema/inventory'
+import publisherSchema, { Publisher } from './schema/publisher'
 
-const BookModel = mongoose.model('Book', bookSchema)
-const BookInventoryModel = mongoose.model('BookIventory', inventorySchema)
-const AuthorModel = mongoose.model('Autor', authorSchema)
-const PublisherModel = mongoose.model('Publisher', publisherSchema)
+const BookModel: Pagination<Book> = mongoose.model<Book, Pagination<Book>>(
+    'Book',
+    bookSchema
+)
+
+const BookInventoryModel: Pagination<Inventory> = mongoose.model<
+    Inventory,
+    Pagination<Inventory>
+>('BookIventory', inventorySchema)
+
+const AuthorModel: Pagination<Author> = mongoose.model<
+    Author,
+    Pagination<Author>
+>('Author', authorSchema)
+
+const PublisherModel: Pagination<Publisher> = mongoose.model<
+    Publisher,
+    Pagination<Publisher>
+>('Publisher', publisherSchema)
 
 export { BookModel, BookInventoryModel, AuthorModel, PublisherModel }

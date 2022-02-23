@@ -1,5 +1,5 @@
 import { Schema, Document } from 'mongoose'
-import mongoosePaginate from 'mongoose-paginate-v2'
+import { mongoosePagination } from 'mongoose-paginate-ts'
 import baseFields from './base'
 
 export interface Publisher extends Document {
@@ -13,5 +13,5 @@ const publisherSchema = new Schema<Publisher>({
     ...baseFields,
 })
 
-publisherSchema.plugin(mongoosePaginate)
+publisherSchema.plugin(mongoosePagination)
 export default publisherSchema
