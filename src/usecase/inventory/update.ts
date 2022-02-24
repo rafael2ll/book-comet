@@ -22,7 +22,7 @@ const updateInventory = async (model: UpdateInventoryModel) => {
             if (inventory.amount < 0)
                 throw new BadRequestError('inventory cannot be less than 0')
         }
-        inventory.save()
+        await inventory.save()
     })
     await session.endSession()
 }

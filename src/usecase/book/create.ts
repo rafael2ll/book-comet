@@ -1,6 +1,5 @@
 import { BadRequestError } from '@errors/api-errors'
 import { BookModel } from '@db/models'
-import { Types } from 'mongoose'
 import { Book } from '@db/schema/book'
 import { createInventoryInternal } from '@usecases/inventory/internal-create'
 import findAuthorById from '@usecases/author/find-by-id'

@@ -1,7 +1,6 @@
 import { BookModel } from '@db/models'
 import { BadRequestError, ConflictError } from '@errors/api-errors'
-import { Types } from 'mongoose'
-import { CreateBookModel } from '../models'
+import { CreateBookModel, UpdateBookModel } from '../models'
 
 const validateInsertion = async (model: CreateBookModel) => {
     validateInventory(model.amount)
@@ -15,10 +14,21 @@ const validateInventory = (itemCount: number) => {
 const validateExistence = async (model: CreateBookModel): Promise<void> => {
     const booksExist = await BookModel.exists({
         title: model.title,
+        authors: { $elemMatch: { id: model.authorIds } },
+    })
+
+    if (booksExist) throw new ConflictError('Book')
+}
+
+export const validateUpdateExistence = async (
+    model: UpdateBookModel,
+    bookAuthors: string[]
+): Promise<void> => {
+    const booksExist = await BookModel.exists({
+        _id: { $ne: model.id },
+        title: model.title,
         authors: {
-            $elemMatch: {
-                id: model.authorIds.map((aId) => new Types.ObjectId(aId)),
-            },
+            $elemMatch: { id: [...(model.authorIds || []), ...bookAuthors] },
         },
     })
 

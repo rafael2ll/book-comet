@@ -10,11 +10,11 @@ const listBooks = async (
     const paginationOpts = {
         query: {
             ...(opts.publisherId && {
-                'publisher.id': new Types.ObjectId(opts.publisherId),
+                'publisher.id': opts.publisherId,
             }),
             ...(opts.authorId && {
                 authors: {
-                    $elemMatch: { id: new Types.ObjectId(opts.authorId) },
+                    $elemMatch: { id: opts.authorId },
                 },
             }),
         },

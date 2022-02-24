@@ -1,3 +1,5 @@
+import { BookFormat } from '@db/schema/book'
+
 export interface CreateBookModel {
     title: string
     authorIds: string[]
@@ -5,7 +7,7 @@ export interface CreateBookModel {
     publishedYear: number
     summary: string
     amount: number
-    format: 'paper' | 'digital'
+    format: BookFormat
 }
 export interface UpdateBookModel {
     id: string
@@ -15,7 +17,7 @@ export interface UpdateBookModel {
     publishedYear?: number
     summary?: string
     amount?: number
-    format?: 'paper' | 'digital'
+    format?: BookFormat
 }
 
 export interface ListBookRequest {

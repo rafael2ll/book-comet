@@ -2,13 +2,18 @@ import { Schema, Document } from 'mongoose'
 import { mongoosePagination } from 'mongoose-paginate-ts'
 import baseFields, { BaseFields } from './base'
 
+export enum BookFormat {
+    PAPER = 'paper',
+    DIGITAL = 'digital',
+}
+
 export interface Book extends Document, BaseFields {
     title: string
     authors: { id: Schema.Types.ObjectId; name: string }[]
     publisher: { id: Schema.Types.ObjectId; name: string }
     published_year: number
     outOfStock: boolean
-    format: 'paper' | 'digital'
+    format: BookFormat
     summary: string
 }
 
@@ -30,8 +35,8 @@ const bookSchema = new Schema<Book>({
     },
     format: {
         type: String,
-        enum: ['paper', 'digital'],
-        default: 'paper',
+        enum: [BookFormat.PAPER, BookFormat.DIGITAL],
+        default: BookFormat.PAPER,
     },
     ...baseFields,
 })
