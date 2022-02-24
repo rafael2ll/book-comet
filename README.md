@@ -10,7 +10,7 @@ REST API for Book Commet Application, a book store.
 - [__`Mongoose`__](https://mongoosejs.com/): High Level Javacript Adapter for MongoDB
 - [__`Jest`__](https://jestjs.io): Testing tool
 ## Folder Organization
-```bash
+```
 ├── src
 │   ├── api
 │   │   └── *.ts
@@ -41,7 +41,7 @@ The project root source foler were organized in main domains: `api`, `core`, `db
 ### Test Folder Organization
 The tests folder was organized in three main structures:
 - __`core`__: folder the holds shared functions like `usecases` and _database setup_
-- __`core/usecase`: reusable `usecases` which can be used to construct `test cases`
+- __`core/usecase`__: reusable `usecases` which can be used to construct `test cases`
 - __`testcase`__: tests instances
 
 
