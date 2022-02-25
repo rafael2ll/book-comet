@@ -1,0 +1,525 @@
+openapi: 3.0.0
+info:
+  title: book-comet
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8000'
+    description: Local
+paths:
+  /authors:
+    post:
+      summary: Create Author
+      operationId: create-author
+      parameters:
+        - $ref: '#/components/parameters/Session'
+      description: Create an author
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAuthor'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedAuthor'
+  /books:
+    get:
+      summary: List Books
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBookModel'
+      operationId: list-books
+      parameters:
+        - $ref: '#/components/parameters/Session'
+        - $ref: '#/components/parameters/AuthorId'
+        - $ref: '#/components/parameters/PublisherId'
+        - $ref: '#/components/parameters/User-lifecycle_Page'
+        - $ref: '#/components/parameters/size'
+    post:
+      summary: Create Book
+      operationId: create-book
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedBook'
+      parameters:
+        - $ref: '#/components/parameters/Session'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateBook'
+  '/inventory/{bookId}/increase':
+    parameters:
+      - schema:
+          type: string
+        name: bookId
+        in: path
+        required: true
+        description: Book id
+    put:
+      summary: Book Inventory Increase
+      operationId: inventory-book-increase
+      responses:
+        '204':
+          description: No Content
+      description: Increase book inventory amount by value passed in the body
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAmount'
+      parameters:
+        - $ref: '#/components/parameters/Session'
+  /publishers:
+    post:
+      summary: Create Publisher
+      operationId: create-publisher
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedPublisher'
+      description: Create a publisher
+      parameters:
+        - $ref: '#/components/parameters/Session'
+      requestBody:
+        $ref: '#/components/requestBodies/CreatePublisher'
+  '/inventory/{bookId}/decrease':
+    parameters:
+      - schema:
+          type: string
+        name: bookId
+        in: path
+        required: true
+        description: Book id
+    put:
+      summary: Book Inventory Decrease
+      tags: []
+      responses:
+        '204':
+          description: No Content
+      operationId: get-inventory-bookId-decrease
+      description: Decrease book inventory amount by value passed in the body
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAmount'
+      parameters:
+        - $ref: '#/components/parameters/Session'
+  '/books/{bookId}':
+    parameters:
+      - schema:
+          type: string
+        name: bookId
+        in: path
+        required: true
+        description: Book id to be fetched
+    get:
+      summary: Get book
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedBook'
+      operationId: get-book-by-id
+      parameters:
+        - $ref: '#/components/parameters/Session'
+      description: Get a unique book
+  /authentication/login:
+    post:
+      summary: LoginS
+      operationId: authentication-login
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Login Session Cookie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+              required:
+                - username
+                - password
+              x-examples:
+                example-1:
+                  username: rafael
+                  password: password
+            examples:
+              example-1:
+                value:
+                  username: string
+                  password: password
+      description: User login endpoint. (Password must be "password")
+  /authentication/logout:
+    post:
+      summary: Logout
+      operationId: authentication-logout
+      responses:
+        '200':
+          description: OK
+      description: User logout endpoint
+components:
+  schemas:
+    CreateBookModel:
+      title: Book
+      type: object
+      properties:
+        title:
+          type: string
+        summary:
+          type: string
+        publishedYear:
+          type: integer
+          minimum: 0
+        authorIds:
+          type: array
+          items:
+            type: string
+        publisherId:
+          type: string
+        format:
+          type: string
+          enum:
+            - paper
+            - digital
+        amount:
+          type: integer
+          minimum: 0
+      required:
+        - title
+        - summary
+        - publishedYear
+        - authorIds
+        - publisherId
+        - format
+      x-examples:
+        example-1:
+          title: string
+          summary: string
+          publishedYear: 0
+          authorIds:
+            - string
+          publisherId: string
+          format: paper
+          amount: 0
+    CreateAuhtorModel:
+      title: Author
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    CreatePublisherModel:
+      title: Publisher
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    UpdateAmountModel:
+      title: IncreaseAmount
+      type: object
+      properties:
+        amount:
+          type: integer
+          minimum: 1
+      required:
+        - amount
+    UpdateBookModel:
+      title: UpdateBookModel
+      type: object
+      properties:
+        title:
+          type: string
+        summary:
+          type: string
+        publishedYear:
+          type: string
+        authorIds:
+          type: array
+          items:
+            type: string
+        publisherId:
+          type: string
+        format:
+          type: string
+          enum:
+            - paper
+            - digital
+    CreatedBook:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          title: Crime and Punishment
+          authors:
+            - id: 62186048ac1d4e40cf6ff29c
+              name: Fiodor Dostoievski
+          publisher:
+            id: 62186016ac1d4e40cf6ff292
+            name: A&B
+          published_year: 2017
+          summary: Raskolnikov commits a crime
+          outOfStock: false
+          format: paper
+          enabled: true
+          _id: 6218605dac1d4e40cf6ff2a1
+          createdAt: '2022-02-25T04:51:41.930Z'
+          updatedAt: '2022-02-25T04:51:41.930Z'
+      properties:
+        title:
+          type: string
+          minLength: 1
+        authors:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                minLength: 1
+              name:
+                type: string
+                minLength: 1
+            required:
+              - id
+              - name
+        publisher:
+          type: object
+          required:
+            - id
+            - name
+          properties:
+            id:
+              type: string
+              minLength: 1
+            name:
+              type: string
+              minLength: 1
+        publishedYear:
+          type: number
+        summary:
+          type: string
+          minLength: 1
+        outOfStock:
+          type: boolean
+        format:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        _id:
+          type: string
+          minLength: 1
+        createdAt:
+          type: string
+          minLength: 1
+        updatedAt:
+          type: string
+          minLength: 1
+        amount:
+          type: number
+      required:
+        - title
+        - authors
+        - publisher
+        - publishedYear
+        - summary
+        - outOfStock
+        - format
+        - enabled
+        - _id
+        - createdAt
+        - updatedAt
+    CreatedPublisher:
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        _id:
+          type: string
+          minLength: 1
+        createdAt:
+          type: string
+          minLength: 1
+        updatedAt:
+          type: string
+          minLength: 1
+      required:
+        - name
+        - enabled
+        - _id
+        - createdAt
+        - updatedAt
+      x-examples:
+        example-1:
+          name: A&B
+          enabled: true
+          _id: 62186016ac1d4e40cf6ff292
+          createdAt: '2022-02-25T04:50:30.991Z'
+          updatedAt: '2022-02-25T04:50:30.992Z'
+    CreatedAuthor:
+      description: ''
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        _id:
+          type: string
+          minLength: 1
+        createdAt:
+          type: string
+          minLength: 1
+        updatedAt:
+          type: string
+          minLength: 1
+      required:
+        - name
+        - enabled
+        - _id
+        - createdAt
+        - updatedAt
+      x-examples:
+        example-1:
+          name: Fiodor Dostoievski II
+          enabled: true
+          _id: 62185c1fee002ccee41c0318
+          createdAt: '2022-02-25T04:33:35.639Z'
+          updatedAt: '2022-02-25T04:33:35.639Z'
+    ListBookModel:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          items:
+            - _id: 621862ac3a4a15538f55e4aa
+              title: Crime and Punishment
+              authors:
+                - id: 621862a63a4a15538f55e4a2
+                  name: Fiodor Dostoievski
+              publisher:
+                id: 621862a93a4a15538f55e4a5
+                name: A&B
+              published_year: 2017
+              summary: Raskolnikov commits a crime
+              outOfStock: false
+              format: paper
+              enabled: true
+              createdAt: '2022-02-25T05:01:32.546Z'
+              updatedAt: '2022-02-25T05:01:32.546Z'
+          page: 1
+          numOfElements: 1
+          pageSize: 1
+      properties:
+        items:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreatedBook'
+        page:
+          type: number
+        numOfElements:
+          type: number
+        pageSize:
+          type: number
+      required:
+        - items
+        - page
+        - numOfElements
+        - pageSize
+  securitySchemes: {}
+  parameters:
+    Session:
+      name: connect.sid
+      in: cookie
+      required: true
+      schema:
+        type: string
+      description: Login Session Cookie
+    PublisherId:
+      name: publisher_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Publisher's id to be searched
+    AuthorId:
+      name: author_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Author's id to be searched
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Page to be returned
+    size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Page size
+    User-lifecycle_Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+  requestBodies:
+    CreateBook:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBookModel'
+    CreateAuthor:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateAuhtorModel'
+    CreatePublisher:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatePublisherModel'
+    UpdateAmount:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateAmountModel'

@@ -16,6 +16,17 @@ export class BadRequestError extends ApiError {
         super(ErrorCodes.BAD_REQUEST, message)
     }
 }
+export class ForbiddenError extends ApiError {
+    constructor(message: string) {
+        super(ErrorCodes.FORBIDDEN, message)
+    }
+}
+
+export class UnauthorizedError extends ApiError {
+    constructor(message: string) {
+        super(ErrorCodes.UNAUTHORIZED, message)
+    }
+}
 
 export class NotFoundError extends ApiError {
     constructor(parameter: string) {

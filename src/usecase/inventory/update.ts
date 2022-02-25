@@ -11,14 +11,10 @@ const updateInventory = async (model: UpdateInventoryModel) => {
         })
         if (!inventory)
             throw new NotFoundError(`Inventory of book '${model.bookId}'`)
-        if (model.amount) {
-            if (model.amount < 0)
-                throw new BadRequestError('`amount` cannot be less than 0')
-
-            inventory.amount = model.amount
-        } else if (model.action === 'increase') inventory.amount += 1
+        if (model.action === 'increase')
+            inventory.amount += Math.abs(model.amount ?? 1)
         else if (model.action === 'decrease') {
-            inventory.amount -= 1
+            inventory.amount -= Math.abs(model.amount ?? 1)
             if (inventory.amount < 0)
                 throw new BadRequestError('inventory cannot be less than 0')
         }

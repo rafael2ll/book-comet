@@ -58,3 +58,16 @@ To run tests:
 ```bash
 npm test
 ```
+
+## Authentication
+To be able to call the application endpoints the user must call the endpoint `http://localhost:8000/authentication/login` with method POST using the following body:
+```json
+{
+    "username": "some-username",
+    "password": "password"
+}
+```
+The endpoint then will return a session cookie which must be sent in all requests. By default the user login will last for 24 hours or when it's revoked using the POST endpoint `http://localhost:8000/authentication/logout` which clears the user session in the server.
+
+## API
+The OpenAPI file is in the root folder of the project and can be  imported using an OpenAPI parser like https://editor.swagger.io/ , Postman or Insomnia.
