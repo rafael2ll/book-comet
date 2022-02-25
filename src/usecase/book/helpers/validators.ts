@@ -2,6 +2,10 @@ import { BookModel } from '@db/models'
 import { BadRequestError, ConflictError } from '@errors/api-errors'
 import { CreateBookModel, UpdateBookModel } from '../models'
 
+/**
+ *
+ * @description validate new book's model, looking for {title, author} conflicts and inventory amount, if present.
+ */
 const validateInsertion = async (model: CreateBookModel) => {
     validateInventory(model.amount)
     await validateExistence(model)
@@ -20,6 +24,10 @@ const validateExistence = async (model: CreateBookModel): Promise<void> => {
     if (booksExist) throw new ConflictError('Book')
 }
 
+/**
+ *
+ * @description validate book update, looking for {title, author} conflicts
+ */
 export const validateUpdateExistence = async (
     model: UpdateBookModel,
     bookAuthors: string[]

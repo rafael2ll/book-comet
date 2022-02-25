@@ -28,6 +28,9 @@ const createBook = async (createBookModel: CreateBookModel): Promise<Book> => {
     })
     return createdBook
 }
+/**
+ * @description Fetch book authors and publisher from database, validating their existence, and create a new Book object associating the data
+ */
 const createBookObject = async (model: CreateBookModel): Promise<Book> => {
     const authorsPromise = model.authorIds.map((aId) => findAuthorById(aId))
     const publisherPromise = findPublisherById(model.publisherId)
@@ -35,13 +38,13 @@ const createBookObject = async (model: CreateBookModel): Promise<Book> => {
         ...authorsPromise,
         publisherPromise,
     ])
-    const publisher: Publisher = dataResponse.pop()!
+    const publisher: Publisher | undefined = dataResponse.pop()
     return new BookModel({
         title: model.title,
         summary: model.summary,
         outOfStock: model.amount === 0 ?? true,
         published_year: model.publishedYear,
-        publisher: { id: publisher.id, name: publisher.name },
+        publisher: { id: publisher?.id, name: publisher?.name },
         authors: dataResponse.map((author: Author) => ({
             id: author.id,
             name: author.name,
