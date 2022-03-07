@@ -1,3 +1,4 @@
+import checkId from '@core/utils/id-validator'
 import { BookModel } from '@db/models'
 import { BadRequestError, ConflictError } from '@errors/api-errors'
 import { CreateBookModel, UpdateBookModel } from '../models'
@@ -7,6 +8,7 @@ import { CreateBookModel, UpdateBookModel } from '../models'
  * @description validate new book's model, looking for {title, author} conflicts and inventory amount, if present.
  */
 const validateInsertion = async (model: CreateBookModel) => {
+    checkId(model, ['authorIds', 'publisherId'])
     validateInventory(model.amount)
     await validateExistence(model)
 }

@@ -1,4 +1,5 @@
 import { NotFoundError } from '@core/errors/api-errors'
+import checkId from '@core/utils/id-validator'
 import { BookModel } from '@db/models'
 import { Book } from '@db/schema/book'
 import getInventoryByBook from '@usecases/inventory/get-by-book'
@@ -9,6 +10,7 @@ const findBookById = async (
     id: string,
     withInventory = false
 ): Promise<BookInventory> => {
+    checkId({ id })
     const book: BookInventory | null = await BookModel.findOne({
         _id: id,
     }).lean()

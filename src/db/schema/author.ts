@@ -1,3 +1,4 @@
+import defaultSerializationOpts from '@core/utils/serialization'
 import { Document, Schema } from 'mongoose'
 import { mongoosePagination } from 'mongoose-paginate-ts'
 
@@ -14,4 +15,5 @@ const authorSchema = new Schema<Author>({
     ...baseFields,
 })
 authorSchema.plugin(mongoosePagination)
+authorSchema.set('toJSON', defaultSerializationOpts)
 export default authorSchema

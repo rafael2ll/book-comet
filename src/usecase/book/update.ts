@@ -1,4 +1,5 @@
 import { NotFoundError } from '@core/errors/api-errors'
+import checkId from '@core/utils/id-validator'
 import { BookModel } from '@db/models'
 import findAuthorById from '@usecases/author/find-by-id'
 import findPublisherById from '@usecases/publisher/find-by-id'
@@ -6,6 +7,7 @@ import { validateUpdateExistence } from './helpers/validators'
 import { UpdateBookModel } from './models'
 
 const updateBook = async (model: UpdateBookModel): Promise<void> => {
+    checkId(model, ['id', 'authorIds', 'publisherId'], false)
     const book = await BookModel.findOne({ _id: model.id })
     if (!book) throw new NotFoundError('Book')
     if (model.title || model.authorIds)

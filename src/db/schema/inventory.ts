@@ -1,3 +1,4 @@
+import defaultSerializationOpts from '@core/utils/serialization'
 import { Schema, Document } from 'mongoose'
 import { mongoosePagination } from 'mongoose-paginate-ts'
 import baseFields from './base'
@@ -20,4 +21,6 @@ const inventorySchema = new Schema<Inventory>({
 })
 
 inventorySchema.plugin(mongoosePagination)
+inventorySchema.set('toJSON', defaultSerializationOpts)
+
 export default inventorySchema

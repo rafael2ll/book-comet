@@ -44,3 +44,11 @@ export class MissingParameterError extends BadRequestError {
         super(`Missing attributes: ${String(parameter)}`)
     }
 }
+export class InvalidParameterError extends ApiError {
+    constructor(parameter: string | string[]) {
+        super(
+            ErrorCodes.UNPROCESSABLE_ENTITY,
+            `Invalid attribute: ${String(parameter)}`
+        )
+    }
+}
